@@ -1,0 +1,4 @@
+setup/config/accounts/**
+setup/secret
+setup/secret/**
+*.pyc

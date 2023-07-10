@@ -1,0 +1,5 @@
+- add global storage last_processed_ts with the ts of the latest processed donation?
+protect against backend re-submitting old donations
+
+- add Txn.accounts[1] check in claim_vp and allow airdropping 
+backend could watch for optins and send the tokens with a call

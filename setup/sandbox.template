@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Replace this path which your local algod sandbox path
+cd ~/Sources/sandbox
+
+./sandbox "$@"

@@ -1,0 +1,1231 @@
+#pragma version 8
+txn NumAppArgs
+int 0
+==
+bnz main_l24
+txna ApplicationArgs 0
+method "update_state_int(byte[],uint64)void"
+==
+bnz main_l23
+txna ApplicationArgs 0
+method "delete_state_int(byte[])void"
+==
+bnz main_l22
+txna ApplicationArgs 0
+method "unrekey(address)void"
+==
+bnz main_l21
+txna ApplicationArgs 0
+method "unfreeze(address)void"
+==
+bnz main_l20
+txna ApplicationArgs 0
+method "freeze(address)void"
+==
+bnz main_l19
+txna ApplicationArgs 0
+method "claim_vp()void"
+==
+bnz main_l18
+txna ApplicationArgs 0
+method "allocate_vp(uint64,address)void"
+==
+bnz main_l17
+txna ApplicationArgs 0
+method "dilute_unclaimed(uint64,address,address,address,address)void"
+==
+bnz main_l16
+txna ApplicationArgs 0
+method "dilute_claimed(uint64,byte[])void"
+==
+bnz main_l15
+txna ApplicationArgs 0
+method "user_unfreeze()void"
+==
+bnz main_l14
+txna ApplicationArgs 0
+method "user_freeze()void"
+==
+bnz main_l13
+err
+main_l13:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub userfreezecaster_27
+int 1
+return
+main_l14:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub userunfreezecaster_26
+int 1
+return
+main_l15:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub diluteclaimedcaster_25
+int 1
+return
+main_l16:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub diluteunclaimedcaster_24
+int 1
+return
+main_l17:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub allocatevpcaster_23
+int 1
+return
+main_l18:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub claimvpcaster_22
+int 1
+return
+main_l19:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub freezecaster_21
+int 1
+return
+main_l20:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub unfreezecaster_20
+int 1
+return
+main_l21:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub unrekeycaster_19
+int 1
+return
+main_l22:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub deletestateintcaster_18
+int 1
+return
+main_l23:
+txn OnCompletion
+int NoOp
+==
+txn ApplicationID
+int 0
+!=
+&&
+assert
+callsub updatestateintcaster_17
+int 1
+return
+main_l24:
+txn OnCompletion
+int NoOp
+==
+bnz main_l30
+txn OnCompletion
+int UpdateApplication
+==
+bnz main_l29
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l28
+err
+main_l28:
+txn ApplicationID
+int 0
+!=
+assert
+callsub adminonly_3
+int 1
+return
+main_l29:
+txn ApplicationID
+int 0
+!=
+assert
+callsub adminonly_3
+int 1
+return
+main_l30:
+txn ApplicationID
+int 0
+==
+assert
+callsub createapp_2
+int 1
+return
+
+// int_to_ascii
+inttoascii_0:
+proto 1 1
+byte "0123456789"
+frame_dig -1
+int 1
+extract3
+retsub
+
+// itoa
+itoa_1:
+proto 1 1
+frame_dig -1
+int 0
+==
+bnz itoa_1_l5
+frame_dig -1
+int 10
+/
+int 0
+>
+bnz itoa_1_l4
+byte ""
+itoa_1_l3:
+frame_dig -1
+int 10
+%
+callsub inttoascii_0
+concat
+b itoa_1_l6
+itoa_1_l4:
+frame_dig -1
+int 10
+/
+callsub itoa_1
+b itoa_1_l3
+itoa_1_l5:
+byte "0"
+itoa_1_l6:
+retsub
+
+// create_app
+createapp_2:
+proto 0 0
+byte "UNCLAIMED"
+int 0
+app_global_put
+byte "CIRCULATING"
+int 0
+app_global_put
+byte "CAN_ALLOCATE"
+int 1
+app_global_put
+retsub
+
+// admin_only
+adminonly_3:
+proto 0 0
+gtxn 0 Sender
+global CreatorAddress
+!=
+bz adminonly_3_l2
+byte ""
+byte "ERR UNAUTHORIZED"
+==
+assert
+adminonly_3_l2:
+retsub
+
+// update_state_int
+updatestateint_4:
+proto 2 0
+gtxn 0 Sender
+global CreatorAddress
+!=
+gtxn 0 Sender
+addr LBD5RZZ5MEFB5HIEPHWAIPLQBFMZ5UIWUK56S2GPHHHQJU2PO773343SFI
+!=
+&&
+bz updatestateint_4_l2
+byte ""
+byte "ERR UNAUTHORIZED"
+==
+assert
+updatestateint_4_l2:
+frame_dig -2
+extract 2 0
+frame_dig -1
+app_global_put
+retsub
+
+// delete_state_int
+deletestateint_5:
+proto 1 0
+gtxn 0 Sender
+global CreatorAddress
+!=
+gtxn 0 Sender
+addr LBD5RZZ5MEFB5HIEPHWAIPLQBFMZ5UIWUK56S2GPHHHQJU2PO773343SFI
+!=
+&&
+bz deletestateint_5_l2
+byte ""
+byte "ERR UNAUTHORIZED"
+==
+assert
+deletestateint_5_l2:
+frame_dig -1
+extract 2 0
+app_global_del
+retsub
+
+// unrekey
+unrekey_6:
+proto 1 0
+callsub adminonly_3
+itxn_begin
+int pay
+itxn_field TypeEnum
+frame_dig -1
+itxn_field Sender
+frame_dig -1
+itxn_field Receiver
+int 0
+itxn_field Amount
+frame_dig -1
+itxn_field RekeyTo
+int 0
+itxn_field Fee
+itxn_submit
+retsub
+
+// unfreeze
+unfreeze_7:
+proto 1 0
+callsub adminonly_3
+itxn_begin
+int afrz
+itxn_field TypeEnum
+int 2545
+itxn_field FreezeAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+frame_dig -1
+itxn_field FreezeAssetAccount
+int 0
+itxn_field FreezeAssetFrozen
+int 0
+itxn_field Fee
+itxn_submit
+retsub
+
+// freeze
+freeze_8:
+proto 1 0
+callsub adminonly_3
+itxn_begin
+int afrz
+itxn_field TypeEnum
+int 2545
+itxn_field FreezeAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+frame_dig -1
+itxn_field FreezeAssetAccount
+int 1
+itxn_field FreezeAssetFrozen
+int 0
+itxn_field Fee
+itxn_submit
+retsub
+
+// claim_vp
+claimvp_9:
+proto 0 0
+txn Sender
+box_len
+store 2
+store 1
+load 2
+!
+bz claimvp_9_l2
+byte ""
+byte "NO VOTING POWER TO CLAIM"
+==
+assert
+claimvp_9_l2:
+txn Sender
+int 0
+int 8
+box_extract
+btoi
+store 0
+itxn_begin
+int afrz
+itxn_field TypeEnum
+int 2545
+itxn_field FreezeAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+txn Sender
+itxn_field FreezeAssetAccount
+int 0
+itxn_field FreezeAssetFrozen
+int 0
+itxn_field Fee
+itxn_submit
+itxn_begin
+int axfer
+itxn_field TypeEnum
+int 2545
+itxn_field XferAsset
+addr 6MZDB3RGZWXVUJPYA2IJRMI5GEJBUN55DGS62NM2QSGIUZOBMRDWZH2WIU
+itxn_field Sender
+txn Sender
+itxn_field AssetReceiver
+load 0
+itxn_field AssetAmount
+int 0
+itxn_field Fee
+byte ""
+itxn_field Note
+itxn_submit
+itxn_begin
+int afrz
+itxn_field TypeEnum
+int 2545
+itxn_field FreezeAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+txn Sender
+itxn_field FreezeAssetAccount
+int 1
+itxn_field FreezeAssetFrozen
+int 0
+itxn_field Fee
+itxn_submit
+txn Sender
+box_del
+pop
+byte "UNCLAIMED"
+byte "UNCLAIMED"
+app_global_get
+load 0
+-
+app_global_put
+retsub
+
+// allocate_vp
+allocatevp_10:
+proto 2 0
+gtxn 0 Sender
+global CreatorAddress
+!=
+gtxn 0 Sender
+addr LBD5RZZ5MEFB5HIEPHWAIPLQBFMZ5UIWUK56S2GPHHHQJU2PO773343SFI
+!=
+&&
+bnz allocatevp_10_l18
+allocatevp_10_l1:
+byte "CAN_ALLOCATE"
+app_global_get
+int 0
+==
+bnz allocatevp_10_l17
+allocatevp_10_l2:
+frame_dig -1
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+==
+frame_dig -1
+addr 6MZDB3RGZWXVUJPYA2IJRMI5GEJBUN55DGS62NM2QSGIUZOBMRDWZH2WIU
+==
+||
+bnz allocatevp_10_l16
+allocatevp_10_l3:
+frame_dig -1
+int 2545
+asset_holding_get AssetBalance
+store 5
+store 4
+load 5
+bnz allocatevp_10_l8
+itxn_begin
+int axfer
+itxn_field TypeEnum
+int 2545
+itxn_field XferAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+addr 6MZDB3RGZWXVUJPYA2IJRMI5GEJBUN55DGS62NM2QSGIUZOBMRDWZH2WIU
+itxn_field AssetReceiver
+frame_dig -2
+itxn_field AssetAmount
+int 0
+itxn_field Fee
+itxn_submit
+frame_dig -1
+box_len
+store 7
+store 6
+load 7
+!
+bnz allocatevp_10_l7
+frame_dig -1
+int 0
+int 8
+box_extract
+btoi
+store 3
+allocatevp_10_l6:
+frame_dig -1
+load 3
+frame_dig -2
++
+itob
+box_put
+byte "UNCLAIMED"
+byte "UNCLAIMED"
+app_global_get
+frame_dig -2
++
+app_global_put
+b allocatevp_10_l19
+allocatevp_10_l7:
+frame_dig -1
+int 8
+box_create
+pop
+int 0
+store 3
+b allocatevp_10_l6
+allocatevp_10_l8:
+itxn_begin
+int afrz
+itxn_field TypeEnum
+int 2545
+itxn_field FreezeAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+frame_dig -1
+itxn_field FreezeAssetAccount
+int 0
+itxn_field FreezeAssetFrozen
+int 0
+itxn_field Fee
+itxn_submit
+itxn_begin
+int axfer
+itxn_field TypeEnum
+int 2545
+itxn_field XferAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+frame_dig -1
+itxn_field AssetReceiver
+frame_dig -2
+itxn_field AssetAmount
+int 0
+itxn_field Fee
+txn Note
+len
+int 160
+<
+bnz allocatevp_10_l15
+txn Note
+extract 0 29
+byte "crvdao/v1:{\"type\":\"allocate\","
+!=
+bnz allocatevp_10_l14
+int 1
+bnz allocatevp_10_l12
+err
+allocatevp_10_l12:
+byte "CRV DAO voting power allocation for your donation with txn ID "
+txn Note
+int 10
+txn Note
+len
+substring3
+byte "d_tx_id"
+json_ref JSONString
+concat
+allocatevp_10_l13:
+itxn_field Note
+itxn_submit
+itxn_begin
+int afrz
+itxn_field TypeEnum
+int 2545
+itxn_field FreezeAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+frame_dig -1
+itxn_field FreezeAssetAccount
+int 1
+itxn_field FreezeAssetFrozen
+int 0
+itxn_field Fee
+itxn_submit
+b allocatevp_10_l19
+allocatevp_10_l14:
+byte "CRV DAO voting power allocation for your donation"
+b allocatevp_10_l13
+allocatevp_10_l15:
+byte "CRV DAO voting power allocation for your donation"
+b allocatevp_10_l13
+allocatevp_10_l16:
+byte ""
+byte "ERR INVALID DESTINATION"
+==
+assert
+b allocatevp_10_l3
+allocatevp_10_l17:
+byte ""
+byte "ERR ALLOCATIONS LOCKED"
+==
+assert
+b allocatevp_10_l2
+allocatevp_10_l18:
+byte ""
+byte "ERR UNAUTHORIZED"
+==
+assert
+b allocatevp_10_l1
+allocatevp_10_l19:
+byte "CIRCULATING"
+byte "CIRCULATING"
+app_global_get
+frame_dig -2
++
+app_global_put
+retsub
+
+// _dilute_unclaimed
+diluteunclaimed_11:
+proto 2 0
+frame_dig -1
+box_len
+store 11
+store 10
+load 11
+!
+bnz diluteunclaimed_11_l5
+diluteunclaimed_11_l1:
+frame_dig -1
+int 0
+int 8
+box_extract
+btoi
+store 8
+frame_dig -2
+load 8
+*
+int 1000
+/
+store 9
+load 9
+int 0
+>
+bz diluteunclaimed_11_l6
+itxn_begin
+int axfer
+itxn_field TypeEnum
+int 2545
+itxn_field XferAsset
+addr 6MZDB3RGZWXVUJPYA2IJRMI5GEJBUN55DGS62NM2QSGIUZOBMRDWZH2WIU
+itxn_field Sender
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field AssetReceiver
+load 9
+itxn_field AssetAmount
+int 0
+itxn_field Fee
+itxn_submit
+byte "CIRCULATING"
+byte "CIRCULATING"
+app_global_get
+load 9
+-
+app_global_put
+byte "UNCLAIMED"
+byte "UNCLAIMED"
+app_global_get
+load 9
+-
+app_global_put
+load 8
+load 9
+-
+store 9
+load 9
+int 0
+>
+bnz diluteunclaimed_11_l4
+frame_dig -1
+box_del
+pop
+b diluteunclaimed_11_l6
+diluteunclaimed_11_l4:
+frame_dig -1
+load 9
+itob
+box_put
+b diluteunclaimed_11_l6
+diluteunclaimed_11_l5:
+byte ""
+byte "NO VOTING POWER TO DILUTE"
+==
+assert
+b diluteunclaimed_11_l1
+diluteunclaimed_11_l6:
+retsub
+
+// dilute_unclaimed
+diluteunclaimed_12:
+proto 5 0
+gtxn 0 Sender
+global CreatorAddress
+!=
+gtxn 0 Sender
+addr LBD5RZZ5MEFB5HIEPHWAIPLQBFMZ5UIWUK56S2GPHHHQJU2PO773343SFI
+!=
+&&
+bnz diluteunclaimed_12_l9
+diluteunclaimed_12_l1:
+frame_dig -4
+global ZeroAddress
+!=
+bnz diluteunclaimed_12_l8
+diluteunclaimed_12_l2:
+frame_dig -3
+global ZeroAddress
+!=
+bnz diluteunclaimed_12_l7
+diluteunclaimed_12_l3:
+frame_dig -2
+global ZeroAddress
+!=
+bnz diluteunclaimed_12_l6
+diluteunclaimed_12_l4:
+frame_dig -1
+global ZeroAddress
+!=
+bz diluteunclaimed_12_l10
+frame_dig -5
+frame_dig -1
+callsub diluteunclaimed_11
+b diluteunclaimed_12_l10
+diluteunclaimed_12_l6:
+frame_dig -5
+frame_dig -2
+callsub diluteunclaimed_11
+b diluteunclaimed_12_l4
+diluteunclaimed_12_l7:
+frame_dig -5
+frame_dig -3
+callsub diluteunclaimed_11
+b diluteunclaimed_12_l3
+diluteunclaimed_12_l8:
+frame_dig -5
+frame_dig -4
+callsub diluteunclaimed_11
+b diluteunclaimed_12_l2
+diluteunclaimed_12_l9:
+byte ""
+byte "ERR UNAUTHORIZED"
+==
+assert
+b diluteunclaimed_12_l1
+diluteunclaimed_12_l10:
+retsub
+
+// _dilute_claimed
+diluteclaimed_13:
+proto 3 0
+frame_dig -2
+int 2545
+asset_holding_get AssetBalance
+store 16
+store 15
+load 16
+!
+bnz diluteclaimed_13_l3
+diluteclaimed_13_l1:
+load 15
+int 0
+==
+bz diluteclaimed_13_l4
+byte ""
+byte "ERR NO ASSET BALANCE"
+==
+assert
+b diluteclaimed_13_l4
+diluteclaimed_13_l3:
+byte ""
+byte "ERR NOT OPTED IN TO ASSET"
+==
+assert
+b diluteclaimed_13_l1
+diluteclaimed_13_l4:
+load 15
+store 13
+frame_dig -3
+load 13
+*
+int 1000
+/
+store 14
+itxn_begin
+int axfer
+itxn_field TypeEnum
+int 2545
+itxn_field XferAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+frame_dig -2
+itxn_field AssetSender
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field AssetReceiver
+load 14
+itxn_field AssetAmount
+int 0
+itxn_field Fee
+itxn_submit
+byte "CIRCULATING"
+byte "CIRCULATING"
+app_global_get
+load 14
+-
+app_global_put
+retsub
+
+// dilute_claimed
+diluteclaimed_14:
+proto 2 0
+gtxn 0 Sender
+global CreatorAddress
+!=
+gtxn 0 Sender
+addr LBD5RZZ5MEFB5HIEPHWAIPLQBFMZ5UIWUK56S2GPHHHQJU2PO773343SFI
+!=
+&&
+bnz diluteclaimed_14_l6
+diluteclaimed_14_l1:
+txn NumAccounts
+callsub itoa_1
+log
+int 1
+store 12
+diluteclaimed_14_l2:
+load 12
+txn NumAccounts
+<=
+bz diluteclaimed_14_l7
+load 12
+txnas Accounts
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+==
+load 12
+txnas Accounts
+addr 6MZDB3RGZWXVUJPYA2IJRMI5GEJBUN55DGS62NM2QSGIUZOBMRDWZH2WIU
+==
+||
+!
+bnz diluteclaimed_14_l5
+diluteclaimed_14_l4:
+load 12
+int 1
++
+store 12
+b diluteclaimed_14_l2
+diluteclaimed_14_l5:
+frame_dig -2
+load 12
+txnas Accounts
+frame_dig -1
+extract 2 0
+callsub diluteclaimed_13
+b diluteclaimed_14_l4
+diluteclaimed_14_l6:
+byte ""
+byte "ERR UNAUTHORIZED"
+==
+assert
+b diluteclaimed_14_l1
+diluteclaimed_14_l7:
+retsub
+
+// user_unfreeze
+userunfreeze_15:
+proto 0 0
+global GroupSize
+int 3
+==
+!
+bnz userunfreeze_15_l19
+userunfreeze_15_l1:
+gtxn 0 Sender
+gtxn 1 Sender
+==
+!
+bnz userunfreeze_15_l18
+userunfreeze_15_l2:
+gtxn 2 Sender
+gtxn 1 Sender
+==
+!
+bnz userunfreeze_15_l17
+userunfreeze_15_l3:
+txn GroupIndex
+int 0
+==
+!
+bnz userunfreeze_15_l16
+userunfreeze_15_l4:
+gtxn 1 TypeEnum
+int axfer
+==
+!
+bnz userunfreeze_15_l15
+userunfreeze_15_l5:
+gtxn 1 AssetReceiver
+addr 6MZDB3RGZWXVUJPYA2IJRMI5GEJBUN55DGS62NM2QSGIUZOBMRDWZH2WIU
+!=
+!
+bnz userunfreeze_15_l14
+userunfreeze_15_l6:
+gtxn 1 AssetReceiver
+int 2545
+asset_holding_get AssetBalance
+store 18
+store 17
+load 17
+int 0
+==
+bnz userunfreeze_15_l13
+userunfreeze_15_l7:
+gtxn 2 TypeEnum
+int appl
+==
+!
+bnz userunfreeze_15_l12
+userunfreeze_15_l8:
+gtxna 2 ApplicationArgs 0
+byte base64(80PpvA==)
+==
+!
+bnz userunfreeze_15_l11
+userunfreeze_15_l9:
+itxn_begin
+int afrz
+itxn_field TypeEnum
+int 2545
+itxn_field FreezeAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+txn Sender
+itxn_field FreezeAssetAccount
+int 0
+itxn_field FreezeAssetFrozen
+int 0
+itxn_field Fee
+itxn_submit
+itxn_begin
+int afrz
+itxn_field TypeEnum
+int 2545
+itxn_field FreezeAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+gtxn 1 AssetReceiver
+itxn_field FreezeAssetAccount
+int 0
+itxn_field FreezeAssetFrozen
+int 0
+itxn_field Fee
+itxn_submit
+gtxn 1 AssetReceiver
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+==
+bz userunfreeze_15_l20
+byte "CIRCULATING"
+byte "CIRCULATING"
+app_global_get
+gtxn 1 AssetAmount
+-
+app_global_put
+b userunfreeze_15_l20
+userunfreeze_15_l11:
+byte ""
+byte "ERR EXPECTED FREEZE AS 3 OF 3"
+==
+assert
+b userunfreeze_15_l9
+userunfreeze_15_l12:
+byte ""
+byte "ERR EXPECTED FREEZE AS 3 OF 3"
+==
+assert
+b userunfreeze_15_l8
+userunfreeze_15_l13:
+byte ""
+byte "ERR RECEIVER MUST HAVE NON-ZERO BALANCE"
+==
+assert
+b userunfreeze_15_l7
+userunfreeze_15_l14:
+byte ""
+byte "ERR INVALID DESTINATION"
+==
+assert
+b userunfreeze_15_l6
+userunfreeze_15_l15:
+byte ""
+byte "ERR EXPECTED ASSET TRANSFER AS 2 OF 3"
+==
+assert
+b userunfreeze_15_l5
+userunfreeze_15_l16:
+byte ""
+byte "ERR EXPECTED UNFREEZE AS 1 OF 3"
+==
+assert
+b userunfreeze_15_l4
+userunfreeze_15_l17:
+byte ""
+byte "ERR EXPECTED SAME CALLER IN GROUP"
+==
+assert
+b userunfreeze_15_l3
+userunfreeze_15_l18:
+byte ""
+byte "ERR EXPECTED SAME CALLER IN GROUP"
+==
+assert
+b userunfreeze_15_l2
+userunfreeze_15_l19:
+byte ""
+byte "ERR EXPECTED GROUP OF 3"
+==
+assert
+b userunfreeze_15_l1
+userunfreeze_15_l20:
+retsub
+
+// user_freeze
+userfreeze_16:
+proto 0 0
+itxn_begin
+int afrz
+itxn_field TypeEnum
+int 2545
+itxn_field FreezeAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+txn Sender
+itxn_field FreezeAssetAccount
+int 1
+itxn_field FreezeAssetFrozen
+int 0
+itxn_field Fee
+itxn_submit
+gtxn 1 AssetReceiver
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+!=
+bz userfreeze_16_l2
+itxn_begin
+int afrz
+itxn_field TypeEnum
+int 2545
+itxn_field FreezeAsset
+addr KPFNE4QUWIFROZQAUV2HC6LARVDGYBJ6MHIZZIODGB4LLNFOWCC7LC3OPA
+itxn_field Sender
+gtxn 1 AssetReceiver
+itxn_field FreezeAssetAccount
+int 1
+itxn_field FreezeAssetFrozen
+int 0
+itxn_field Fee
+itxn_submit
+userfreeze_16_l2:
+retsub
+
+// update_state_int_caster
+updatestateintcaster_17:
+proto 0 0
+byte ""
+int 0
+txna ApplicationArgs 1
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+frame_dig 0
+frame_dig 1
+callsub updatestateint_4
+retsub
+
+// delete_state_int_caster
+deletestateintcaster_18:
+proto 0 0
+byte ""
+txna ApplicationArgs 1
+frame_bury 0
+frame_dig 0
+callsub deletestateint_5
+retsub
+
+// unrekey_caster
+unrekeycaster_19:
+proto 0 0
+byte ""
+txna ApplicationArgs 1
+frame_bury 0
+frame_dig 0
+callsub unrekey_6
+retsub
+
+// unfreeze_caster
+unfreezecaster_20:
+proto 0 0
+byte ""
+txna ApplicationArgs 1
+frame_bury 0
+frame_dig 0
+callsub unfreeze_7
+retsub
+
+// freeze_caster
+freezecaster_21:
+proto 0 0
+byte ""
+txna ApplicationArgs 1
+frame_bury 0
+frame_dig 0
+callsub freeze_8
+retsub
+
+// claim_vp_caster
+claimvpcaster_22:
+proto 0 0
+callsub claimvp_9
+retsub
+
+// allocate_vp_caster
+allocatevpcaster_23:
+proto 0 0
+int 0
+byte ""
+txna ApplicationArgs 1
+btoi
+frame_bury 0
+txna ApplicationArgs 2
+frame_bury 1
+frame_dig 0
+frame_dig 1
+callsub allocatevp_10
+retsub
+
+// dilute_unclaimed_caster
+diluteunclaimedcaster_24:
+proto 0 0
+int 0
+byte ""
+dupn 3
+txna ApplicationArgs 1
+btoi
+frame_bury 0
+txna ApplicationArgs 2
+frame_bury 1
+txna ApplicationArgs 3
+frame_bury 2
+txna ApplicationArgs 4
+frame_bury 3
+txna ApplicationArgs 5
+frame_bury 4
+frame_dig 0
+frame_dig 1
+frame_dig 2
+frame_dig 3
+frame_dig 4
+callsub diluteunclaimed_12
+retsub
+
+// dilute_claimed_caster
+diluteclaimedcaster_25:
+proto 0 0
+int 0
+byte ""
+txna ApplicationArgs 1
+btoi
+frame_bury 0
+txna ApplicationArgs 2
+frame_bury 1
+frame_dig 0
+frame_dig 1
+callsub diluteclaimed_14
+retsub
+
+// user_unfreeze_caster
+userunfreezecaster_26:
+proto 0 0
+callsub userunfreeze_15
+retsub
+
+// user_freeze_caster
+userfreezecaster_27:
+proto 0 0
+callsub userfreeze_16
+retsub
