@@ -2,3 +2,4 @@ setup/config/accounts/**
 setup/secret
 setup/secret/**
 *.pyc
+**/__pycache__
